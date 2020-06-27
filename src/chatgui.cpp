@@ -13,7 +13,7 @@ const int height = 736;
 // wxWidgets APP
 IMPLEMENT_APP(ChatBotApp);
 
-std::string dataPath = "../";
+std::string dataPath = "../../";
 std::string imgBasePath = dataPath + "images/";
 
 bool ChatBotApp::OnInit()
@@ -61,8 +61,8 @@ void ChatBotFrame::OnEnter(wxCommandEvent &WXUNUSED(event))
     // delete text in text control
     _userTextCtrl->Clear();
 
-    // send user text to chatbot 
-     _panelDialog->GetChatLogicHandle()->SendMessageToChatbot(std::string(userText.mb_str()));
+    // send user text to chatbot
+    _panelDialog->GetChatLogicHandle()->SendMessageToChatbot(std::string(userText.mb_str()));
 }
 
 BEGIN_EVENT_TABLE(ChatBotFrameImagePanel, wxPanel)
@@ -96,7 +96,7 @@ void ChatBotFrameImagePanel::render(wxDC &dc)
     wxSize sz = this->GetSize();
     wxImage imgSmall = image.Rescale(sz.GetWidth(), sz.GetHeight(), wxIMAGE_QUALITY_HIGH);
     _image = wxBitmap(imgSmall);
-    
+
     dc.DrawBitmap(_image, 0, 0, false);
 }
 
@@ -118,7 +118,8 @@ ChatBotPanelDialog::ChatBotPanelDialog(wxWindow *parent, wxWindowID id)
     ////
 
     // create chat logic instance
-    _chatLogic = new ChatLogic(); 
+    //_chatLogic = new ChatLogic();
+    _chatLogic = std::unique_ptr<ChatLogic>();
 
     // pass pointer to chatbot dialog so answers can be displayed in GUI
     _chatLogic->SetPanelDialogHandle(this);
@@ -135,7 +136,7 @@ ChatBotPanelDialog::~ChatBotPanelDialog()
     //// STUDENT CODE
     ////
 
-    delete _chatLogic;
+    // delete _chatLogic;
 
     ////
     //// EOF STUDENT CODE
@@ -195,7 +196,7 @@ ChatBotPanelDialogItem::ChatBotPanelDialogItem(wxPanel *parent, wxString text, b
     : wxPanel(parent, -1, wxPoint(-1, -1), wxSize(-1, -1), wxBORDER_NONE)
 {
     // retrieve image from chatbot
-    wxBitmap *bitmap = isFromUser == true ? nullptr : ((ChatBotPanelDialog*)parent)->GetChatLogicHandle()->GetImageFromChatbot(); 
+    wxBitmap *bitmap = isFromUser == true ? nullptr : ((ChatBotPanelDialog *)parent)->GetChatLogicHandle()->GetImageFromChatbot();
 
     // create image and text
     _chatBotImg = new wxStaticBitmap(this, wxID_ANY, (isFromUser ? wxBitmap(imgBasePath + "user.png", wxBITMAP_TYPE_PNG) : *bitmap), wxPoint(-1, -1), wxSize(-1, -1));
